@@ -75,7 +75,7 @@ uint32_t setTMC26xDRVCTRL(uint8_t interpol, uint8_t doubleEdge, uint16_t microst
 #define CS_MASK       ((1<<CS_X_BIT) | (1<<CS_Y_BIT) | (1<<CS_Z_BIT))
 
 #define X_RUN_CURRENT 20
-#define Y_RUN_CURRENT 20
+#define Y_RUN_CURRENT 32
 #define Z_RUN_CURRENT 20
 
 #define X_IDLE_CURRENT 20
@@ -88,7 +88,7 @@ uint32_t setTMC26xDRVCTRL(uint8_t interpol, uint8_t doubleEdge, uint16_t microst
 
 #define CARVEY_CHOPPER_BLANKING_TIME 16 // use 16,24,36 0r 54 only ... low is quiet high is accurate
 #define CARVEY_RANDOM_TIME_OFF NO_RANDOM_TIME_OFF // is the random chopper off timing used.
-#define CARVEY_STALL_GAURD_THRESHOLD 10 
+#define CARVEY_STALL_GAURD_THRESHOLD 63 
 
 
 void tmc26x_init()

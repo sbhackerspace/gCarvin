@@ -30,7 +30,7 @@
 #ifdef DEFAULTS_CARVIN
   // Grbl generic default settings. Should work across different machines.
   #define DEFAULT_X_STEPS_PER_MM 88.889
-  #define DEFAULT_Y_STEPS_PER_MM 88.889
+  #define DEFAULT_Y_STEPS_PER_MM 200.0
   #define DEFAULT_Z_STEPS_PER_MM 377.893  // or 5120 (for older m8 rods)
   #define DEFAULT_X_MAX_RATE 5000.0 // mm/min
   #define DEFAULT_Y_MAX_RATE 5000.0 // mm/min
@@ -51,7 +51,7 @@
   #define DEFAULT_JUNCTION_DEVIATION 0.02 // mm
   #define DEFAULT_ARC_TOLERANCE 0.002 // mm
   #define DEFAULT_REPORT_INCHES 0 // false
-  #define DEFAULT_AUTO_START 1 // true
+  #define DEFAULT_AUTO_START n1 // true
   #define DEFAULT_INVERT_ST_ENABLE 0 // false
   #define DEFAULT_INVERT_LIMIT_PINS 0 // false
   #define DEFAULT_SOFT_LIMIT_ENABLE 0 // false
