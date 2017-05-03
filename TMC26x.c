@@ -75,15 +75,15 @@ uint32_t setTMC26xDRVCTRL(uint8_t interpol, uint8_t doubleEdge, uint16_t microst
 #define CS_MASK       ((1<<CS_X_BIT) | (1<<CS_Y_BIT) | (1<<CS_Z_BIT))
 
 #define X_RUN_CURRENT 20
-#define Y_RUN_CURRENT 32
+#define Y_RUN_CURRENT 2
 #define Z_RUN_CURRENT 20
 
 #define X_IDLE_CURRENT 20
-#define Y_IDLE_CURRENT 20
+#define Y_IDLE_CURRENT 2
 #define Z_IDLE_CURRENT 20
 
 #define X_MICROSTEPS 16
-#define Y_MICROSTEPS 16
+#define Y_MICROSTEPS 2
 #define Z_MICROSTEPS 2
 
 #define CARVEY_CHOPPER_BLANKING_TIME 16 // use 16,24,36 0r 54 only ... low is quiet high is accurate
@@ -117,7 +117,7 @@ void tmc26x_init()
   delay_ms(20); // give a little time before SPI starts
   spi_send20bit(setTMC26xCHOPCONF(CARVEY_CHOPPER_BLANKING_TIME, CHOPPER_MODE_STANDARD, CARVEY_RANDOM_TIME_OFF), &CS_PORT, csBit);
   spi_send20bit(setTMC26xSMARTEN(MIN_COOL_CURRENT_HALF), &CS_PORT, csBit);
-  spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, Y_RUN_CURRENT), &CS_PORT, csBit);
+  spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, 63, Y_RUN_CURRENT), &CS_PORT, csBit);
   spi_send20bit( setTMC26xDRVCONF(READOUT_VALUE_SG2), &CS_PORT, csBit);
   spi_send20bit( setTMC26xDRVCTRL(STEP_ITERPOL_DISABLE,DOUBLE_EDGE_DISABLE,Y_MICROSTEPS), &CS_PORT, csBit);
   
@@ -140,13 +140,13 @@ void setTMC26xRunCurrent(uint8_t level)  // 1 = run, 0 = idle
 	if (level == 1)
 	{	
 		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, X_RUN_CURRENT), &CS_PORT, CS_X_BIT);
-		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, Y_RUN_CURRENT), &CS_PORT, CS_Y_BIT);
+		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, 63, Y_RUN_CURRENT), &CS_PORT, CS_Y_BIT);
 		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, Z_RUN_CURRENT), &CS_PORT, CS_Z_BIT);
 	}
 	else 
 	{
 		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, X_IDLE_CURRENT), &CS_PORT, CS_X_BIT);
-		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, Y_IDLE_CURRENT), &CS_PORT, CS_Y_BIT);
+		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, 63, Y_RUN_CURRENT), &CS_PORT, CS_Y_BIT);
 		spi_send20bit(setTMC26xSGSCONF(SG2_FILTER_ENABLE, CARVEY_STALL_GAURD_THRESHOLD, Z_IDLE_CURRENT), &CS_PORT, CS_Z_BIT);
 	}
 }
@@ -321,11 +321,16 @@ uint32_t setTMC26xDRVCONF(uint8_t readItem)
   
   regVal |= (VSENSE_165MV << VSENSE_SHIFT);
   
+  //Disable short to GND detections
+  //One of these caused things to get a little smokey
+  //regVal |= (0x1 << 10);
+  //regVal &= ~(0x3 << 8);
   
 
    // If readItem is out of range set to a default value
    if (readItem > READOUT_VALUE_SG2_COOLSTEP)
     readItem = READOUT_VALUE_SG2;
+
  
    regVal |= (READOUT_VALUE_SG2 << READOUT_VALUE_SHIFT);
  
@@ -417,5 +422,6 @@ unsigned long tmc26xStallGuardReading()
 {
   
 }
+
 
 
